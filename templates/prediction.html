@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Prediction - Sarawak Locations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/predict"><i class="fas fa-water me-2"></i>Flood Prediction System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/predict"><i class="fas fa-chart-line me-1"></i>Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/sibu"><i class="fas fa-map-marker-alt me-1"></i>Sibu</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <div class="container">
+            <h1><i class="fas fa-chart-line me-2"></i>Flood Prediction</h1>
+            <p>Select a location to view flood predictions and monitoring data</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            {% for location_id, location in locations.items() %}
+            <div class="col-md-4 mb-4">
+                <div class="card location-card" onclick="window.location.href='/location/{{ location_id }}'">
+                    <div class="card-header">
+                        <i class="fas fa-map-marker-alt me-2"></i>{{ location.name }}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <i class="fas fa-river me-2"></i><strong>River System:</strong> {{ location.river_system }}<br>
+                            <i class="fas fa-users me-2"></i><strong>Population:</strong> {{ "{:,}".format(location.population) }}<br>
+                            <i class="fas fa-exclamation-circle me-2"></i><strong>Flood Threshold:</strong> {{ location.flood_threshold }}m
+                        </p>
+                        <div class="d-grid">
+                            <a href="/location/{{ location_id }}" class="btn btn-primary">
+                                <i class="fas fa-chart-bar me-2"></i>View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Map Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-map me-2"></i>Sarawak Flood Risk Map
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="ratio ratio-16x9">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1270337.4750000002!2d109.5!3d2.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x321d441b5e7086a7%3A0x5f0d38c8b5c5b5c5!2sSarawak%2C%20Malaysia!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" 
+                                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h5><i class="fas fa-info-circle me-2"></i>About Sarawak Flood Risk</h5>
+                        <p>Sarawak, Malaysia's largest state, is prone to flooding due to its tropical climate and extensive river systems. The main rivers include:</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="fas fa-river me-2"></i>Rajang River (Sibu)</li>
+                            <li class="list-group-item"><i class="fas fa-river me-2"></i>Sarawak River (Kuching)</li>
+                            <li class="list-group-item"><i class="fas fa-river me-2"></i>Baram River (Miri)</li>
+                            <li class="list-group-item"><i class="fas fa-river me-2"></i>Kemena River (Bintulu)</li>
+                            <li class="list-group-item"><i class="fas fa-river me-2"></i>Lupar River (Sri Aman)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

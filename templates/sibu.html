@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sibu Flood Information - Sarawak Flood Prediction System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+        .risk-indicator {
+            height: 20px;
+            background: linear-gradient(to right, #34a853, #fbbc05, #ea4335);
+            border-radius: 10px;
+            margin: 1rem 0;
+            position: relative;
+        }
+        .risk-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 2px solid #202124;
+            border-radius: 50%;
+            top: -2px;
+            transform: translateX(-50%);
+        }
+        .flood-zone-card {
+            border-left: 4px solid;
+            margin-bottom: 1rem;
+        }
+        .flood-zone-card.high-risk {
+            border-left-color: #ea4335;
+        }
+        .flood-zone-card.medium-risk {
+            border-left-color: #fbbc05;
+        }
+        .flood-zone-card.low-risk {
+            border-left-color: #34a853;
+        }
+        .prediction-card {
+            transition: all 0.3s ease;
+        }
+        .prediction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/predict"><i class="fas fa-water me-2"></i>Flood Prediction System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/predict"><i class="fas fa-chart-line me-1"></i>Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/sibu"><i class="fas fa-map-marker-alt me-1"></i>Sibu</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">Sibu, Sarawak Flood Information</h2>
+                        <p class="text-muted">Real-time monitoring and historical data for Sibu flood risk assessment</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Current Conditions</h5>
+                                        <div id="current-conditions">
+                                            <p>Loading current conditions...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Risk Assessment</h5>
+                                        <div id="risk-assessment">
+                                            <p>Loading risk assessment...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mt-4">Historical Water Levels</h4>
+                        <div class="chart-container">
+                            <canvas id="water-level-chart"></canvas>
+                        </div>
+                        
+                        <h4 class="mt-4">Rainfall Patterns</h4>
+                        <div class="chart-container">
+                            <canvas id="rainfall-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Flood Zones in Sibu</h3>
+                        <div id="flood-zones">
+                            <p>Loading flood zones...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">7-Day Forecast</h4>
+                        <div id="forecast">
+                            <p>Loading forecast...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Emergency Contacts</h4>
+                        <div id="emergency-contacts">
+                            <p>Loading emergency contacts...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Infrastructure</h4>
+                        <div id="infrastructure">
+                            <p>Loading infrastructure information...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='sibu_data.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load current conditions
+            const currentConditions = window.sibuData.getCurrentConditions();
+            document.getElementById('current-conditions').innerHTML = `
+                <p><strong>Date:</strong> ${currentConditions.date}</p>
+                <p><strong>Water Level:</strong> ${currentConditions.waterLevel} m</p>
+                <p><strong>Rainfall:</strong> ${currentConditions.rainfall} mm</p>
+                <p><strong>Season:</strong> ${currentConditions.season}</p>
+                <p><strong>Trend:</strong> ${currentConditions.trend}</p>
+                <p><strong>Last Updated:</strong> ${new Date(currentConditions.lastUpdated).toLocaleString()}</p>
+            `;
+            
+            // Load risk assessment
+            const riskLevel = currentConditions.riskLevel;
+            const riskPercentage = riskLevel === 'High' ? 90 : riskLevel === 'Medium' ? 60 : 20;
+            document.getElementById('risk-assessment').innerHTML = `
+                <div class="risk-indicator">
+                    <div class="risk-marker" style="left: ${riskPercentage}%;"></div>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Low</span>
+                    <span>Medium</span>
+                    <span>High</span>
+                </div>
+                <p><strong>Current Risk Level:</strong> <span class="badge bg-${riskLevel === 'High' ? 'danger' : riskLevel === 'Medium' ? 'warning' : 'success'}">${riskLevel}</span></p>
+            `;
+            
+            // Load flood zones
+            const floodZones = window.sibuData.historicalData.floodZones;
+            document.getElementById('flood-zones').innerHTML = floodZones.map(zone => `
+                <div class="card flood-zone-card ${zone.risk.toLowerCase()}-risk">
+                    <div class="card-body">
+                        <h5 class="card-title">${zone.name}</h5>
+                        <p><strong>Risk Level:</strong> <span class="badge bg-${zone.risk === 'High' ? 'danger' : zone.risk === 'Medium' ? 'warning' : 'success'}">${zone.risk}</span></p>
+                        <p><strong>Elevation:</strong> ${zone.elevation} m</p>
+                        <p><strong>Population:</strong> ${zone.population.toLocaleString()}</p>
+                        <p><strong>Evacuation Centers:</strong> ${zone.evacuationCenters}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Load emergency contacts
+            const emergencyContacts = window.sibuData.historicalData.emergencyContacts;
+            document.getElementById('emergency-contacts').innerHTML = `
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Police
+                        <span class="badge bg-primary rounded-pill">${emergencyContacts.police}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Fire Department
+                        <span class="badge bg-danger rounded-pill">${emergencyContacts.fire}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Hospital
+                        <span class="badge bg-success rounded-pill">${emergencyContacts.hospital}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Flood Hotline
+                        <span class="badge bg-info rounded-pill">${emergencyContacts.floodHotline}</span>
+                    </li>
+                </ul>
+            `;
+            
+            // Load infrastructure
+            const infrastructure = window.sibuData.historicalData.infrastructure;
+            document.getElementById('infrastructure').innerHTML = `
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Bridges
+                        <span class="badge bg-primary rounded-pill">${infrastructure.bridges}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Flood Gates
+                        <span class="badge bg-primary rounded-pill">${infrastructure.floodGates}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Water Level Stations
+                        <span class="badge bg-primary rounded-pill">${infrastructure.waterLevelStations}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Rainfall Stations
+                        <span class="badge bg-primary rounded-pill">${infrastructure.rainfallStations}</span>
+                    </li>
+                </ul>
+            `;
+            
+            // Load forecast
+            const forecast = [];
+            for (let i = 1; i <= 7; i++) {
+                forecast.push(window.sibuData.predictFutureConditions(i));
+            }
+            
+            document.getElementById('forecast').innerHTML = forecast.map(day => `
+                <div class="card prediction-card mb-2">
+                    <div class="card-body">
+                        <h6 class="card-title">${day.date}</h6>
+                        <p><strong>Predicted Water Level:</strong> ${day.predictedWaterLevel} m</p>
+                        <p><strong>Predicted Risk Level:</strong> <span class="badge bg-${day.predictedRiskLevel === 'High' ? 'danger' : day.predictedRiskLevel === 'Medium' ? 'warning' : 'success'}">${day.predictedRiskLevel}</span></p>
+                        <p><strong>Confidence:</strong> ${day.confidence}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Create charts
+            const historicalData = window.sibuData.historicalData.historicalWaterLevels;
+            const dates = historicalData.map(item => item.date);
+            const waterLevels = historicalData.map(item => item.level);
+            const rainfall = historicalData.map(item => item.rainfall);
+            
+            // Water Level Chart
+            const waterLevelCtx = document.getElementById('water-level-chart').getContext('2d');
+            new Chart(waterLevelCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Water Level (m)',
+                        data: waterLevels,
+                        borderColor: '#1a73e8',
+                        backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Water Level (m)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Rainfall Chart
+            const rainfallCtx = document.getElementById('rainfall-chart').getContext('2d');
+            new Chart(rainfallCtx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Rainfall (mm)',
+                        data: rainfall,
+                        backgroundColor: 'rgba(52, 168, 83, 0.7)',
+                        borderColor: '#34a853',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Rainfall (mm)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

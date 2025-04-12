@@ -1,0 +1,318 @@
+/* Custom styles for Flood Prediction System */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --background-color: #f8f9fa;
+    --text-color: #2c3e50;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --gradient-primary: linear-gradient(135deg, #2c3e50, #3498db);
+    --gradient-secondary: linear-gradient(135deg, #3498db, #2ecc71);
+    --gradient-accent: linear-gradient(135deg, #e74c3c, #f39c12);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    background-image: url('https://images.unsplash.com/photo-1519692933481-e162a57d6721?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-blend-mode: overlay;
+    background-color: rgba(248, 249, 250, 0.9);
+}
+
+.navbar {
+    background: var(--gradient-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: white !important;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white !important;
+}
+
+.hero-section {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 5rem 0;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1519692933481-e162a57d6721?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-section p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    max-width: 600px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: var(--gradient-primary);
+    color: white;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    border-bottom: none;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.risk-indicator {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    min-width: 100px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.risk-low {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+}
+
+.risk-medium {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+    color: white;
+}
+
+.risk-high {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.location-card {
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.location-card:hover {
+    border-color: var(--secondary-color);
+    transform: translateY(-5px);
+}
+
+.location-card.active {
+    border-color: var(--secondary-color);
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.btn-primary {
+    background: var(--gradient-secondary);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2980b9, #27ae60);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chart-container {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 1.5rem;
+}
+
+.emergency-contacts {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 1.2rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.flood-zone {
+    padding: 1.2rem;
+    margin: 0.8rem 0;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.zone-high {
+    background: var(--gradient-accent);
+}
+
+.zone-medium {
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+}
+
+.zone-low {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table thead {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.table th {
+    font-weight: 600;
+    padding: 1rem;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.display-1 {
+    font-weight: 700;
+    color: var(--primary-color);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lead {
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+    
+    .hero-section p {
+        font-size: 1.1rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+}
+
+/* Map container styles */
+#map {
+    height: 400px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* Loading spinner */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--primary-color);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    #map {
+        height: 300px;
+    }
+} 
